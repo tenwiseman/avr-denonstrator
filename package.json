@@ -1,28 +1,28 @@
 {
-  "name"       : "denon-avr-rest-api",
-  "version"    : "2.0.0",
-  "author"  : "me",   
+  "name": "denon-avr-rest-api",
+  "version": "2.0.0",
+  "author": "me",
   "description": "Expose a REST API for a Denon web-enabled AVR receiver for Home Assistant",
-  "main"       : "lib/server.js",
+  "main": "lib/server.js",
   "scripts": {
     "start": "node lib/server.js"
   },
   "keywords": [
     "denon",
     "av",
-	"avr",
+    "avr",
     "receiver",
     "remote",
-	"rest",
+    "rest",
     "telnet"
-  ],  
+  ],
   "dependencies": {
-    "express"  : "4.13.1",
+    "express": "^4.21.1",
     "socket.io": "*"
   },
-  "repository":{
-	"type":"git",
-	"url":"https://github.com/tenwiseman/denon-avr-rest-api"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tenwiseman/denon-avr-rest-api"
   },
-  "license":"MIT"
+  "license": "MIT"
 }
