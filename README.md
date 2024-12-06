@@ -54,7 +54,8 @@ curl --header "Content-Type: application/json" \
 ### lines n
 
 List last n lines of data received from the AVR
-_script: lines_api_
+_demo script_
+lines_api_
 ``` bash
 #!/bin/bash
 count=$1
