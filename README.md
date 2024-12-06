@@ -62,6 +62,11 @@ curl --header "Content-Type: application/json" \
   http://localhost:8000/lines?count=$count
 </pre>
 
+``` Javascript
+./lines_api 2
+["ZMOFF","PWSTANDBY"]
+```
+
 ### status
 
 Show connected status of AVR
