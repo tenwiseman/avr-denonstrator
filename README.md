@@ -56,15 +56,14 @@ curl --header "Content-Type: application/json" \
 List last n lines of data received from the AVR
 
 _demo script_
-
-- lines_api_
+- lines_api {lines}
 ``` bash
 #!/bin/bash
 count=$1
 curl --header "Content-Type: application/json" \
   http://localhost:8000/lines?count=$count
 ```
-_output_
+_example output_
 ``` bash
 ./lines_api 2
 ["ZMOFF","PWSTANDBY"]
