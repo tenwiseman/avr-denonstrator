@@ -108,7 +108,7 @@ find a closer one matching your receiver on Google.
 - This application communicates with the receiver via the factory-provided telnet API.
 
 ## Acknowledgements
-- This project is a complete respin of https://github.com/bencouture/denon-rest-api,
+- This project is a complete respin of the aims of https://github.com/bencouture/denon-rest-api,
 - I needed something to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely
   if it was powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
 
