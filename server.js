@@ -1,7 +1,7 @@
 const express = require('express');
 
-const SocketClient = require('./SocketClient.js');
-const CommandQueue = require('./CommandQueue.js');
+const SocketClient = require('./lib/SocketClient.js');
+const CommandQueue = require('./lib/CommandQueue.js');
 
 // Initialize the socket client and Express app
 const app = express();
