@@ -29,14 +29,21 @@ Here are some Bash test scripts for each, with some examples of output.
 
 Sends commands to the connected AVR. These enter a queue and are processed in order.
 
-<pre>
+demo script_
+- command_api
+``` bash
 #!/bin/bash
 cmd=$1
 curl --header "Content-Type: application/json" \
   --request POST \
   --data "{\"command\":\"$cmd\r\"}" \
   http://localhost:8000/send-command
-</pre>
+```
+_example output_
+``` bash
+$ ./message_api PWON
+Message sent successfully
+```
 
 ### send
 
@@ -54,7 +61,7 @@ curl --header "Content-Type: application/json" \
 ```
 _example output_
 ``` bash
-./message_api PWSTANDBY
+$ ./message_api PWSTANDBY
 Message sent successfully
 ```
 
@@ -72,7 +79,7 @@ curl --header "Content-Type: application/json" \
 ```
 _example output_
 ``` bash
-./lines_api 2
+$ ./lines_api 2
 ["ZMOFF","PWSTANDBY"]
 ```
 
@@ -80,11 +87,18 @@ _example output_
 
 Show connected status of AVR
 
-<pre>
+_demo script_
+- status_api
+``` bash
 #!/bin/bash
 curl --header "Content-Type: application/json" \
   http://localhost:8000/status
-</pre>
+```
+_example output_
+``` bash
+$ ./status_api
+{"status":"connected"}
+```
 
 
 
