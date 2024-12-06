@@ -105,14 +105,19 @@ $ ./status_api
 ***
 
 ## Notes
-- The full list of valid commands is available in the included protocol PDF from Denon.
+- The full list of valid commands is available in the included protocol PDF from Denon. You may
+find a closer one matching your receiver on Google.
 - You may need to adjust settings on your receiver to allow remote network control of your device.
 - This application communicates with the receiver via the factory-provided telnet API.
-- This is unsecured telnet. You do know that is NOT a good idea ;->
+- Beware, this is unsecured telnet. You do know that is NOT a good idea, and should be nowhere near
+a live Internet interface, Use a disconected VLAN ;->
 
 ## Acknoledgemnts
 - This project is a respin of https://github.com/bencouture/denon-rest-api, I needed something
   to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely if it was
   powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
-- Chatgpt wrote most of the code. I just told it what I wanted. It works but YMMV.
+
+  TBH I wasn't that satisfied with the Denon/DenonAVR integration offered in HA. If someone wants to
+  use this as a basic to rewrite that, knock yourself out! Beside ChatGPT wrote me most of the code.
+  I just told it what I wanted. It works but YMMV. MIT Licence.
 
