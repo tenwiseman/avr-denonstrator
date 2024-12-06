@@ -7,19 +7,22 @@ This application creates a REST API that can be used to send commands to a Denon
 a network connection.
 
 ## Configuration
-
 Change the ip address of the AVR and REST port in server.js (default: 8000) 
+
+***
 
 ## Running in Docker
 The included Dockerfile will install the dependencies and run up an Alpine image.
 
-## Running from comamnd line
+## Running from command line
 1) Navigate to the root of this project in the command line.
 1) Install Node (http://nodejs.org) and execute `npm install`. 
 2) Run `node .` to launch the web server.
 
 ## Executing commands
 Send POST requests to http://localhost:[port]/[endpoint]
+
+***
 
 ## Endpoints
 
@@ -99,15 +102,17 @@ _example output_
 $ ./status_api
 {"status":"connected"}
 ```
+***
 
 ## Notes
 - The full list of valid commands is available in the included protocol PDF from Denon.
 - You may need to adjust settings on your receiver to allow remote network control of your device.
 - This application communicates with the receiver via the factory-provided telnet API.
+- This is unsecured telnet. You do know that is NOT a good idea ;->
 
 ## Acknoledgemnts
-
 - This project is a respin of https://github.com/bencouture/denon-rest-api, I needed something
   to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely if it was
   powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
+- Chatgpt wrote most of the code. I just told it what I wanted. It works but YMMV.
 
