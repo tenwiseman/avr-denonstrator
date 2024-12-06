@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "author": "me",
   "description": "Expose a REST API for a Denon web-enabled AVR receiver for Home Assistant",
-  "main": "lib/server.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
