@@ -21,12 +21,14 @@ The included Dockerfile will install the dependencies and run up an Alpine image
 
 ## Executing commands
 Send POST requests to http://localhost:[port]/[endpoint]
+- All output from AVR is returned as JSON.
+- Diagnostic output is also available on the process stdout stream.
 
 ***
 
 ## Endpoints
 
-Here are some Bash test scripts for each, with some examples of output.
+Here are some Bash test scripts for each endpoint, with some examples of output.
 
 ### send-command
 
@@ -110,7 +112,7 @@ find a closer one matching your receiver on Google.
 - You may need to adjust settings on your receiver to allow remote network control of your device.
 - This application communicates with the receiver via the factory-provided telnet API.
 - Beware, this is unsecured telnet. You do know that is NOT a good idea, and should be nowhere near
-a live Internet interface, Use a disconected VLAN ;->
+a live Internet interface. Use a disconected VLAN ;->
 
 ## Acknoledgemnts
 - This project is a complete respin of https://github.com/bencouture/denon-rest-api, I needed something
