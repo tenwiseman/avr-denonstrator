@@ -27,14 +27,14 @@ Send POST requests to http://localhost:[port]/[endpoint]
 
 Sends commands to the connected AVR. These enter a queue and are processed in order.
 
-`
+<pre>
 #!/bin/bash
 cmd=$1
 curl --header "Content-Type: application/json" \
   --request POST \
   --data "{\"command\":\"$cmd\r\"}" \
   http://localhost:8000/send-command
-`
+</pre>
 
 ### send
 
