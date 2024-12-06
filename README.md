@@ -3,7 +3,7 @@
 Expose a REST API for a Denon web-enabled AVR receiver
 
 ## Summary
-This application creates a REST API that can be used to send commands to a Denon AV receiver over
+This application creates a REST API that can be used to send Telnet commands to a Denon AV receiver over
 a network connection.
 
 ## Configuration
@@ -27,11 +27,9 @@ Send POST requests to http://localhost:[port]/[endpoint]
 ***
 
 ## Endpoints
-
 Here are some Bash test scripts for each endpoint, with some examples of output.
 
 ### send-command
-
 Sends commands to the connected AVR. These enter a queue and are processed in order.
 
 demo script_
@@ -51,7 +49,6 @@ Message sent successfully
 ```
 
 ### send
-
 Send a message straight through to the AVR, bypassing the queue
 
 _demo script_
@@ -71,7 +68,6 @@ Message sent successfully
 ```
 
 ### lines n
-
 List last n lines of data received from the AVR
 
 _demo script_
@@ -89,7 +85,6 @@ $ ./lines_api 2
 ```
 
 ### status
-
 Show connected status of AVR
 
 _demo script_
@@ -111,15 +106,13 @@ $ ./status_api
 find a closer one matching your receiver on Google.
 - You may need to adjust settings on your receiver to allow remote network control of your device.
 - This application communicates with the receiver via the factory-provided telnet API.
-- Beware, this is unsecured telnet. You do know that is NOT a good idea, and should be nowhere near
-a live Internet interface. Use a disconected VLAN ;->
 
-## Acknoledgemnts
-- This project is a complete respin of https://github.com/bencouture/denon-rest-api, I needed something
-  to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely if it was
-  powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
+## Acknowledgements
+- This project is a complete respin of https://github.com/bencouture/denon-rest-api,
+- I needed something to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely
+  if it was powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
 
-  TBH I wasn't that satisfied with the Denon/DenonAVR integration offered in HA. If someone wants to
-  use this as a basic to rewrite that, knock yourself out! Beside ChatGPT wrote me most of the code.
+- TBH I wasn't that satisfied with the Denon/DenonAVR integration offered in HA. If someone wants to
+  use this as a foundation to rewrite that, knock yourself out! Beside ChatGPT wrote me most of the code.
   I just told it what I wanted. It works but YMMV. MIT Licence.
 
