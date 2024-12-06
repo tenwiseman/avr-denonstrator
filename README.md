@@ -42,14 +42,21 @@ curl --header "Content-Type: application/json" \
 
 Send a message straight through to the AVR, bypassing the queue
 
-<pre>
+_demo script_
+- message_api
+``` bash
 #!/bin/bash
 cmd=$1
 curl --header "Content-Type: application/json" \
   --request POST \
   --data "{\"message\":\"$cmd\r\"}" \
   http://localhost:8000/send
-</pre>
+```
+_example output_
+``` bash
+./message_api PWSTANDBY
+Message sent successfully
+```
 
 ### lines n
 
