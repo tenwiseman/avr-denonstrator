@@ -113,7 +113,7 @@ find a closer one matching your receiver on Google.
 a live Internet interface, Use a disconected VLAN ;->
 
 ## Acknoledgemnts
-- This project is a respin of https://github.com/bencouture/denon-rest-api, I needed something
+- This project is a complete respin of https://github.com/bencouture/denon-rest-api, I needed something
   to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely if it was
   powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
 
