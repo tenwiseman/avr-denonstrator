@@ -74,4 +74,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Adrian's ignores
+
 package-lock.json
+lib_2/
+lib_3/
