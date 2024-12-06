@@ -14,4 +14,4 @@ COPY . /usr/src/app
 # Expose the web service port
 EXPOSE 8000
 
-CMD node . $ADDRESS 8000
+CMD node .
