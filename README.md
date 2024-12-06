@@ -1,4 +1,4 @@
-# denon-avr-rest-api
+# Another Denon AVR REST API
 
 Expose a REST API for a Denon web-enabled AVR receiver
 
@@ -116,3 +116,4 @@ find a closer one matching your receiver on Google.
   use this as a foundation to rewrite that, knock yourself out! Beside ChatGPT wrote me most of the code.
   I just told it what I wanted. It works but YMMV. MIT Licence.
 
+- Denon is just some Electronics company, I have no connection with.
