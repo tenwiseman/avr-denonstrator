@@ -23,6 +23,8 @@ Send POST requests to http://localhost:[port]/[endpoint]
 
 ## Endpoints
 
+Here are some Bash test scripts for each, with some examples of output.
+
 ### send-command
 
 Sends commands to the connected AVR. These enter a queue and are processed in order.
@@ -40,31 +42,35 @@ curl --header "Content-Type: application/json" \
 
 Send a message straight through to the AVR, bypassing the queue
 
+<pre>
 #!/bin/bash
 cmd=$1
 curl --header "Content-Type: application/json" \
   --request POST \
   --data "{\"message\":\"$cmd\r\"}" \
   http://localhost:8000/send
+</pre>
 
 ### lines n
 
 List last n lines of data received from the AVR
 
+<pre>
 #!/bin/bash
 count=$1
 curl --header "Content-Type: application/json" \
   http://localhost:8000/lines?count=$count
-
+</pre>
 
 ### status
 
 Show connected status of AVR
 
+<pre>
 #!/bin/bash
 curl --header "Content-Type: application/json" \
   http://localhost:8000/status
-
+</pre>
 
 
 
