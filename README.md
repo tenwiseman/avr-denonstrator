@@ -100,16 +100,6 @@ $ ./status_api
 {"status":"connected"}
 ```
 
-
-
-
-
-``` Javascript
-'http://localhost:8000/api/SIDVD'     //Sets Input to DVD   
-'http://localhost:8000/api/SITUNER'   //Sets Input to TUNER   
-'http://localhost:8000/api/PWON'      //turns PoWer ON   
-```
-
 ## Notes
 - The full list of valid commands is available in the included protocol PDF from Denon.
 - You may need to adjust settings on your receiver to allow remote network control of your device.
@@ -119,5 +109,5 @@ $ ./status_api
 
 - This project is a respin of https://github.com/bencouture/denon-rest-api, I needed something
   to talk to my 16yr old Denon AVR-3808 from Home Assistant, mainly to ask nicely if it was
-  powered up or not; so that I could switch on a sub-woofer on the other side of the room.
+  powered up or not; so that it could switch on a sub-woofer located on the other side of the room.
 
