@@ -13,7 +13,7 @@ const commandQueue = new CommandQueue(socketClient);
 
 // Set up a listener for incoming lines from the socket
 socketClient.setLineCallback((line) => {
-    console.log(`Processed line: ${line}`);
+    //console.log(`Processed line: ${line}`);
 });
 
 // Middleware to parse JSON requests
@@ -38,6 +38,8 @@ app.post('/send', async (req, res) => {
     }
 });
 
+// Send a message through the socket via both POST and GET methods
+// Optionaly request a regex
 app.all('/expect', async (req, res) => {
 
     if (req.method === 'POST') {
@@ -45,16 +47,19 @@ app.all('/expect', async (req, res) => {
         if (!command || !expected) {
             return res.status(400).send('Command and expected response pattern are required');
         }
-        console.log(`command:${command}`);
-    } else {
-        var command = req.query.command;
+        
+    } else { // GET
+        var command = req.query.command || 'PW?'
         var expected = req.query.expected || "(PWON|PWSTANDBY)";
         var timeout = 5000;
     }
 
+    var timeout = timeout || 2000;
+
     try {
         const regex = new RegExp(expected); // Convert expected string to regex
         const response = await commandQueue.enqueue(`${command}\r`, regex, timeout || 5000);
+        console.log(`HTTP(/expect) method:${req.method}, request:${command}, response:${response}`);
         res.json({ success: true, response });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
