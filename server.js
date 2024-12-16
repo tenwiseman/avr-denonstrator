@@ -38,8 +38,7 @@ app.post('/send', async (req, res) => {
     }
 });
 
-// Send a message through the socket via both POST and GET methods
-// Optionaly request a regex
+// Process an expect request using both POST and GET methods
 app.all('/expect', async (req, res) => {
 
     if (req.method === 'POST') {
