@@ -58,7 +58,7 @@ app.all('/expect', async (req, res) => {
     try {
         const regex = new RegExp(expected); // Convert expected string to regex
         const response = await commandQueue.enqueue(`${command}\r`, regex, timeout || 5000);
-        console.log(`HTTP(/expect) method:${req.method}, request:${command}, response:${response}`);
+        console.log(`${new Date().toISOString()} : HTTP(/expect) method:${req.method}, request:${command}, response:${response}`);
         res.json({ success: true, response });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -75,7 +75,9 @@ app.get('/lines', (req, res) => {
 // Check the socket connection status
 app.get('/status', (req, res) => {
     const status = socketClient.isConnected() ? 'connected' : 'disconnected';
-    res.json({ status });
+    const clientcounts = socketClient.getCounts();
+    const queuecounts = commandQueue.getCounts();
+    res.json({ status, clientcounts, queuecounts})
 });
 
 
