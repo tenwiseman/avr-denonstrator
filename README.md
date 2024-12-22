@@ -116,4 +116,6 @@ find a closer one matching your receiver on Google.
   use this as a foundation to rewrite that, knock yourself out! Beside ChatGPT wrote me most of the code.
   I just told it what I wanted. It works but YMMV. MIT Licence.
 
-- Denon is just some Electronics company, I have no connection with.
+- Denon is just some Electronics company I have no connection with other than buying their things
+  secondhand. They made good equipment, whether I find that continues sadly depends on the £££ in my wallet,
+  and if the same company stays around post 2024...
