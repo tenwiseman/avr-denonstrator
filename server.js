@@ -2,6 +2,8 @@ const express = require('express');
 
 const SocketClient = require('./lib/SocketClient.js');
 const CommandQueue = require('./lib/CommandQueue.js');
+const EventQueue = require('./lib/EventQueue.js');
+
 
 // Initialize the socket client and Express app
 const app = express();
@@ -10,10 +12,15 @@ const HOST = '192.168.3.212'; // Replace with your server's address
 const SOCKET_PORT = 23; // Replace with the server's port
 const socketClient = new SocketClient(HOST, SOCKET_PORT);
 const commandQueue = new CommandQueue(socketClient);
+const eventQueue = new EventQueue(socketClient);
 
 // Set up a listener for incoming lines from the socket
 socketClient.setLineCallback((line) => {
-    //console.log(`Processed line: ${line}`);
+    
+    console.log(`Processed event: ${line}`);
+    
+    eventQueue.enqueue(line);
+
 });
 
 // Middleware to parse JSON requests
@@ -78,6 +85,42 @@ app.get('/status', (req, res) => {
     const clientcounts = socketClient.getCounts();
     const queuecounts = commandQueue.getCounts();
     res.json({ status, clientcounts, queuecounts})
+});
+
+// #################
+
+app.post('/api', async (req, res) => {
+
+    if (req.method === 'POST') {
+        var { command, expected, timeout } = req.body;
+        if (!command || !expected) {
+            return res.status(400).send('Command and expected response pattern are required');
+        }
+    }
+
+    try {
+        const regex = new RegExp(expected); // Convert expected string to regex
+        const response = await commandQueue.enqueue(`${command}\r`, regex, timeout || 5000);
+        console.log(`${new Date().toISOString()} : HTTP(/expect) method:${req.method}, request:${command}, response:${response}`);
+        res.json({ success: true, response });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+
+    
+
+});
+
+app.get('/events', async (req, res) => {
+   
+    try {
+        const response = await eventQueue.dequeue();
+        console.log(`${new Date().toISOString()} : HTTP(/events) response:${response}`);
+        res.json({ success: true, response });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+
 });
 
 
