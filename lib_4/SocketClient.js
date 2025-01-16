@@ -47,6 +47,7 @@ class SocketClient {
     setupLineReader() {
         if (this.socket) {
             this.receivedLines = []; // Store received lines
+            this.expectations = []; // Track expected responses
             let buffer = '';
     
             this.socket.on('data', (chunk) => {
@@ -63,6 +64,15 @@ class SocketClient {
                         // Skip received blank lines
                         continue;
                     }
+
+                    // Process expectations
+                    if (this.expectations.length > 0) {
+                        const expectation = this.expectations[0];
+                        if (expectation.regex.test(line)) {
+                            //console.log(`PASSED line: ${trimmedLine}`);     
+                            expectation.resolve(line);
+                        }
+                    }
                             
                     // Call the line callback if set
                     if (this.onLineCallback) {
@@ -70,6 +80,40 @@ class SocketClient {
                     }
 
 
+
+
+
+
+                    /*
+
+                    //console.log(`Received line: ${trimmedLine}`);
+                    this.receivedLines.push(trimmedLine);
+    
+                    // Process expectations
+                    if (this.expectations.length > 0) {
+                        const expectation = this.expectations[0];
+                        if (expectation.regex.test(line)) {
+                            //console.log(`PASSED line: ${trimmedLine}`);     
+                            expectation.resolve(line);
+                            this.expectations.shift();
+                        } 
+                    }
+
+                   
+
+
+
+                    // limit receivedLines storage
+                    while (this.receivedLines.length > 20) {
+                        this.receivedLines.shift();
+                    }
+    
+                    // Call the line callback if set
+                    if (this.onLineCallback) {
+                        this.onLineCallback(line);
+                    }
+
+                    */
                 }
             });
     
@@ -82,6 +126,8 @@ class SocketClient {
                     if (this.onLineCallback) {
                         this.onLineCallback(buffer);
                     }
+
+
 
                     // this.receivedLines.push(buffer);
                     buffer = ''; // Clear the buffer
@@ -120,7 +166,27 @@ class SocketClient {
         });
     }
 
-   
+    // Expect a particular response to a command
+    async expectResponse(command, regex, timeout = 5000) {
+        await this.ensureSocketAndSend(command);
+        
+        
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => {
+                reject(new Error(`Expected response not received within ${timeout}ms`));
+                this.expectations.shift(); // Ditch the failed expectation
+            }, timeout);
+
+            this.expectations.push({
+                regex,
+                resolve: (response) => {
+                    clearTimeout(timer);
+                    resolve(response);
+                },
+                reject
+            });
+        });
+    }
     
     // Get the last received lines
     getLastLines(count = 10) {
@@ -137,7 +203,15 @@ class SocketClient {
         return this.socket && !this.socket.destroyed;
     }
 
-    
+    // Return Counts for receivedLines and expectations
+    getCounts() {
+        const counts = {
+            receivedLines: this.receivedLines && this.receivedLines.length,
+            expectations: this.expectations && this.expectations.length
+         }
+        return counts;
+    }
+
 }
 
 module.exports = SocketClient;
