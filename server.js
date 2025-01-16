@@ -18,8 +18,6 @@ const socketClient = new SocketClient(HOST, SOCKET_PORT);
 socketClient.setLineCallback((line) => {
     
     console.log(`Processed event: ${line}`);
-    
-    eventQueue.enqueue(line);
 
 });
 
@@ -45,7 +43,6 @@ app.post('/send', async (req, res) => {
     }
 });
 
-/
 // Get the last received lines from the socket
 app.get('/lines', (req, res) => {
     const count = parseInt(req.query.count, 10) || 10; // Default to last 10 lines
