@@ -4,6 +4,10 @@ const SocketClient = require('./lib/SocketClient.js');
 // const CommandQueue = require('./lib/CommandQueue.js');
 // const EventQueue = require('./lib/EventQueue.js');
 
+const Stream = require('stream');
+const readableStream = new Stream.Readable();
+
+
 
 // Initialize the socket client and Express app
 const app = express();
@@ -24,11 +28,21 @@ socketClient.setLineCallback((line) => {
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Middleware to serve static assets
+app.use(express.static('wwwroot'));
+
+// Enable urlencoded parsing
+app.use(express.urlencoded({
+    extended: true
+  }));
+
 // REST API endpoints
 
 // Send a message through the socket
 app.post('/send', async (req, res) => {
     const message = req.body.message;
+
+    console.log(message);
 
     if (!message) {
         return res.status(400).send('Message is required');
@@ -42,6 +56,11 @@ app.post('/send', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
+// Get the last received lines from the socket
+app.get('/test', (req, res) => {
+    res.send('this is a test');
+})
 
 // Get the last received lines from the socket
 app.get('/lines', (req, res) => {

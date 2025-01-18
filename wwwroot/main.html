@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Denonatrator</title>
+    </head>
+    <body>
+        <em>testing</em><br/>
+        <textarea id="results" rows="5" cols="20">hello</textarea>
+        <form name="control" method="post" action="/send">
+            <input type="text" name="message" maxlength="15"/>
+            <input type="submit"/>
+        </form>
+    </body>
+
+    <script type="text/javascript">
+        fetch('/test', {
+            method: 'GET',
+        }).then(
+            function(response) {
+                response.text().then(function(data) {
+                    document.getElementById('results').innerHTML = data
+                });
+            })
+    </script>
+
+
+
+</html>
