@@ -5,7 +5,10 @@
     </head>
     <body>
         <em>testing</em><br/>
+        <button id="connectBtn">Connect</button>
+        <form name="control" method="post" action="/send">
         <textarea id="results" rows="5" cols="20">hello</textarea>
+        <button id="abortBtn">Abort</button>
         <form name="control" method="post" action="/send">
             <input type="text" name="message" maxlength="15"/>
             <input type="submit"/>
@@ -13,14 +16,57 @@
     </body>
 
     <script type="text/javascript">
-        fetch('/test', {
+
+        /*
+        fetch('/realtime-stream', {
             method: 'GET',
         }).then(
             function(response) {
-                response.text().then(function(data) {
-                    document.getElementById('results').innerHTML = data
-                });
-            })
+                response.text().then(
+                    function(data) {
+                        document.getElementById('results').innerHTML = data
+                    }
+                );
+            }
+        )
+
+        */
+        let bytes = 0;
+
+
+
+
+        const aborter = new AbortController();
+        abortBtn.addEventListener("click", () => aborter.abort());
+        logChunks("/realtime-stream", { signal: aborter.signal });
+        const decoder = new TextDecoder();
+
+        async function logChunks(url, { signal }) {
+            try {
+                
+                const response = await fetch(url, signal);
+                for await (const chunk of response.body) {
+                    if (signal.aborted) throw signal.reason;
+                    const text = decoder.decode(chunk, { stream: true });
+                    document.getElementById('results').innerHTML = text;
+                }
+            } catch (e) {
+                if (e instanceof TypeError) {
+                    console.log(e);
+                    //logConsumer("TypeError: Browser may not support async iteration");
+                } else {
+                    //logConsumer(`Error in async iterator: ${e}.`);
+                }
+            }
+        }
+
+        
+
+
+
+
+
+
     </script>
 
 

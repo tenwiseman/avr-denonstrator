@@ -4,8 +4,9 @@ const SocketClient = require('./lib/SocketClient.js');
 // const CommandQueue = require('./lib/CommandQueue.js');
 // const EventQueue = require('./lib/EventQueue.js');
 
-const Stream = require('stream');
-const readableStream = new Stream.Readable();
+
+const { Readable } = require('stream');
+
 
 
 
@@ -17,6 +18,48 @@ const SOCKET_PORT = 23; // Replace with the server's port
 const socketClient = new SocketClient(HOST, SOCKET_PORT);
 // const commandQueue = new CommandQueue(socketClient);
 // const eventQueue = new EventQueue(socketClient);
+
+// Create a real-time readable stream
+class RealTimeStream extends Readable {
+    constructor(options) {
+        super(options);
+        this.counter = 0; // Simulating a counter for real-time data
+    }
+
+    _read() {
+        // Simulate real-time data by periodically pushing data
+        if (!this.interval) {
+          this.interval = setInterval(() => {
+            if (this.counter < 10) {
+              // Push a chunk of real-time data
+              this.push(`Real-time data chunk ${this.counter + 1}\n`);
+              this.counter++;
+            } else {
+              // End the stream after sending 10 chunks
+              this.push(null);
+              clearInterval(this.interval);
+            }
+          }, 1000); // Emit data every 1 second
+        }
+      }
+  /*
+    _read() {}
+
+    sendData() {
+        if (this.counter < 10) {
+            // Push a chunk of real-time data
+            this.push(`Real-time data chunk ${this.counter + 1}\n`);
+            this.counter++;
+        } else {
+            // End the stream after sending 10 chunks
+            this.push(null);
+        }
+    }
+        */
+}
+
+
+
 
 // Set up a listener for incoming lines from the socket
 socketClient.setLineCallback((line) => {
@@ -42,8 +85,6 @@ app.use(express.urlencoded({
 app.post('/send', async (req, res) => {
     const message = req.body.message;
 
-    console.log(message);
-
     if (!message) {
         return res.status(400).send('Message is required');
     }
@@ -61,6 +102,55 @@ app.post('/send', async (req, res) => {
 app.get('/test', (req, res) => {
     res.send('this is a test');
 })
+
+app.get('/realtime-stream', (req, res) => {
+
+    // Set response headers for streaming
+    //  
+    res.set({
+        'Content-Type': 'text/plain',
+      'Transfer-Encoding': 'chunked',
+    });
+
+
+    // Create an instance of the real-time readable stream
+    const stream = new RealTimeStream();
+
+
+    //await socketClient.readSocket();
+
+
+
+
+    /*
+
+    // Send data periodically
+  const interval = setInterval(() => {
+    if (!stream.readableEnded) {
+      stream.sendData();
+    } else {
+      clearInterval(interval);
+    }
+  }, 1000); // Emit data every 1 second
+
+  */
+
+
+  
+    // Pipe the stream to the response
+    stream.pipe(res);
+  
+    // Handle stream errors
+    stream.on('error', (err) => {
+        console.error('Stream error:', err);
+        res.status(500).end('Stream error occurred.');
+    });
+
+    // End response when the stream is destroyed
+    req.on('close', () => {
+       // stream.destroy();
+    });
+});
 
 // Get the last received lines from the socket
 app.get('/lines', (req, res) => {
