@@ -2,20 +2,75 @@
 <html >
     <head>
         <title>Denonatrator</title>
+
+        <script type="text/javascript">
+
+            const aborter = new AbortController();
+            const decoder = new TextDecoder();
+            
+            
+
+            async function logChunks(url, signal) {
+                try {
+                    
+                    const response = await fetch(url, { 
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        signal: signal,
+                        method: 'POST'
+                    });
+                    for await (const chunk of response.body) {
+                        if (signal.aborted) throw signal.reason;
+                        const text = decoder.decode(chunk, { stream: true });
+                        document.getElementById('results').innerHTML = text;
+                    }
+                } catch (e) {
+                    if (e instanceof TypeError) {
+                        console.log(e);
+                        //logConsumer("TypeError: Browser may not support async iteration");
+                    } else {
+                        //logConsumer(`Error in async iterator: ${e}.`);
+                    }
+                }
+            }
+
+             // headers: {
+                   //     'Accept': 'application.json',
+                   //     'Content-Type': 'application/json'
+
+            function formSubmit(e) {
+                //alert("submit");
+                //logChunks("/realtime-stream", { signal: aborter.signal });
+                logChunks('http://localhost:8000/send', aborter.signal);
+                 e.preventDefault();
+            }
+
+            
+
+
+        </script>
+
+
+
+
     </head>
     <body>
         <em>testing</em><br/>
         <button id="connectBtn">Connect</button>
-        <form name="control" method="post" action="/send">
+
         <textarea id="results" rows="5" cols="20">hello</textarea>
         <button id="abortBtn">Abort</button>
-        <form name="control" method="post" action="/send">
+        <form id="form" method="POST">
             <input type="text" name="message" maxlength="15"/>
             <input type="submit"/>
         </form>
     </body>
 
     <script type="text/javascript">
+
+        abortBtn.addEventListener("click", () => aborter.abort());
+        form.addEventListener( "submit", formSubmit );
 
         /*
         fetch('/realtime-stream', {
@@ -31,34 +86,14 @@
         )
 
         */
-        let bytes = 0;
+       
 
 
+        
+        // logChunks("/realtime-stream", { signal: aborter.signal });
+        
 
-
-        const aborter = new AbortController();
-        abortBtn.addEventListener("click", () => aborter.abort());
-        logChunks("/realtime-stream", { signal: aborter.signal });
-        const decoder = new TextDecoder();
-
-        async function logChunks(url, { signal }) {
-            try {
-                
-                const response = await fetch(url, signal);
-                for await (const chunk of response.body) {
-                    if (signal.aborted) throw signal.reason;
-                    const text = decoder.decode(chunk, { stream: true });
-                    document.getElementById('results').innerHTML = text;
-                }
-            } catch (e) {
-                if (e instanceof TypeError) {
-                    console.log(e);
-                    //logConsumer("TypeError: Browser may not support async iteration");
-                } else {
-                    //logConsumer(`Error in async iterator: ${e}.`);
-                }
-            }
-        }
+       
 
         
 

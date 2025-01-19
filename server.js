@@ -71,8 +71,6 @@ socketClient.setLineCallback((line) => {
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Middleware to serve static assets
-app.use(express.static('wwwroot'));
 
 // Enable urlencoded parsing
 app.use(express.urlencoded({
@@ -82,6 +80,8 @@ app.use(express.urlencoded({
 // REST API endpoints
 
 // Send a message through the socket
+
+/*
 app.post('/send', async (req, res) => {
     const message = req.body.message;
 
@@ -97,6 +97,46 @@ app.post('/send', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+*/
+
+app.post('/send', async (req, res) => {
+
+   // const message = req.body.message;
+
+    console.log('got send');
+
+
+    const message = 'PW?';
+
+    // Set response headers for streaming
+    res.set({
+        'Content-Type': 'text/plain',
+        'Transfer-Encoding': 'chunked',
+    });
+
+    if (!message) {
+        return res.status(400).send('Message is required');
+    }
+
+    try {
+        await socketClient.ensureSocketAndSend(`${message}\r`);
+
+        const stream = socketClient.getStream();
+        // Pipe the stream to the response
+        stream.pipe(res);
+
+    } catch (error) {
+      console.error(error.message);
+        console.error(error.message);
+        res.status(500).send(error.message);
+    }
+});
+
+// Middleware to serve static assets
+app.use(express.static('wwwroot'));
+
+
+
 
 // Get the last received lines from the socket
 app.get('/test', (req, res) => {
@@ -114,13 +154,10 @@ app.get('/realtime-stream', (req, res) => {
 
 
     // Create an instance of the real-time readable stream
-    const stream = new RealTimeStream();
+    // const stream = new RealTimeStream();
 
 
-    //await socketClient.readSocket();
-
-
-
+    const stream = socketClient.getStream();
 
     /*
 
