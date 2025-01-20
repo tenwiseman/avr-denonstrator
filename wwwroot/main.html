@@ -10,20 +10,22 @@
             
             
 
-            async function logChunks(url, signal) {
+            async function logChunks(url, o,  signal) {
                 try {
                     
                     const response = await fetch(url, { 
                         headers: {
-                            "Content-Type": "application/json",
+                            'Content-Type': 'application/json'
                         },
                         signal: signal,
-                        method: 'POST'
+                        method: 'POST',
+                        body: JSON.stringify( o )
                     });
                     for await (const chunk of response.body) {
                         if (signal.aborted) throw signal.reason;
                         const text = decoder.decode(chunk, { stream: true });
-                        document.getElementById('results').innerHTML = text;
+                        current = document.getElementById('results').innerHTML;
+                        document.getElementById('results').innerHTML = current + '&#10;' + text;
                     }
                 } catch (e) {
                     if (e instanceof TypeError) {
@@ -42,7 +44,9 @@
             function formSubmit(e) {
                 //alert("submit");
                 //logChunks("/realtime-stream", { signal: aborter.signal });
-                logChunks('http://localhost:8000/send', aborter.signal);
+                const o = {};
+                new FormData(form).forEach( ( value, key) => o[key] = value);
+                logChunks('http://localhost:8000/send', o, aborter.signal);
                  e.preventDefault();
             }
 
@@ -59,7 +63,7 @@
         <em>testing</em><br/>
         <button id="connectBtn">Connect</button>
 
-        <textarea id="results" rows="5" cols="20">hello</textarea>
+        <textarea id="results" rows="30" cols="80">hello</textarea>
         <button id="abortBtn">Abort</button>
         <form id="form" method="POST">
             <input type="text" name="message" maxlength="15"/>
