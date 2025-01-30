@@ -77,25 +77,28 @@ app.get('/stream', async (req, res) => {
             (connected) => {
                 const stream = socketClient.getStream();
 
-                // Set response headers for streaming
-                res.set({
-                    'Content-Type': 'text/plain',
-                    'Transfer-Encoding': 'chunked',
-                });
+                if (stream) {
 
-                // Pipe the stream to the response
-                stream.pipe(res);
+                    // Set response headers for streaming
+                    res.set({
+                        'Content-Type': 'text/plain',
+                        'Transfer-Encoding': 'chunked',
+                    });
 
-                // Handle stream errors
-                stream.on('error', (err) => {
-                    console.error('Stream error:', err);
-                    res.status(500).end('Stream error occurred.');  
-                });
+                    // Pipe the stream to the response
+                    stream.pipe(res);
 
-                // End response when the stream is destroyed
-                    req.on('close', () => {
-                    stream.destroy();
-                });
+                    // Handle stream errors
+                    stream.on('error', (err) => {
+                        console.error('Stream error:', err);
+                        res.status(500).end('Stream error occurred.');  
+                    });
+
+                    // End response when the stream is destroyed
+                        req.on('close', () => {
+                        stream.destroy();
+                    });
+                }
 
             },
 
