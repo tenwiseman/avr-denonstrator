@@ -40,43 +40,84 @@ app.post('/send', async (req, res) => {
 
     const message = req.body.message;
 
-    // Set response headers for streaming
-    res.set({
-        'Content-Type': 'text/plain',
-        'Transfer-Encoding': 'chunked',
-    });
-
     if (!message) {
         return res.status(400).send('Message is required');
     }
 
     try {
-        await socketClient.ensureSocketAndSend(`${message}\r`);
 
-        const stream = socketClient.getStream();
-        // Pipe the stream to the response
-        stream.pipe(res);
+        await socketClient.ensureConnect().then(
 
-        // Handle stream errors
-        stream.on('error', (err) => {
-            console.error('Stream error:', err);
-            res.status(500).end('Stream error occurred.');
-        });
+            (connected) => {
+                socketClient.socket.write(`${message}\r`);
+                console.log(`message sentt: ${message}`);
+            },
 
-        // End response when the stream is destroyed
-        req.on('close', () => {
-          stream.destroy();
-        });
-
-    } catch (error) {
-      console.error(error.message);
+            (failed)=> {
+                console.log('send failed');
+            }
+        )
+ 
+    }
+    
+    catch (error) {
         console.error(error.message);
         res.status(500).send(error.message);
     }
 });
 
+app.get('/stream', async (req, res) => {
 
+    try {
 
+        await socketClient.ensureConnect().then(
+
+            (connected) => {
+                const stream = socketClient.getStream();
+
+                // Set response headers for streaming
+                res.set({
+                    'Content-Type': 'text/plain',
+                    'Transfer-Encoding': 'chunked',
+                });
+
+                // Pipe the stream to the response
+                stream.pipe(res);
+
+                // Handle stream errors
+                stream.on('error', (err) => {
+                    console.error('Stream error:', err);
+                    res.status(500).end('Stream error occurred.');  
+                });
+
+                // End response when the stream is destroyed
+                    req.on('close', () => {
+                    stream.destroy();
+                });
+
+            },
+
+            (failed)=> {
+                console.log('stream closed');
+            }
+        )
+
+    }
+    
+    catch (error) {
+        console.error(error.message);
+        res.status(500).send(error.message);
+    }
+
+});
+
+app.get('/stop', async (req, res) => {
+
+    console.log('got stop');
+
+    socketClient.stopStream();
+
+});
 
 
 /*

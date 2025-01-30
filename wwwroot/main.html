@@ -7,49 +7,57 @@
 
             const aborter = new AbortController();
             const decoder = new TextDecoder();
-            
-            
 
-            async function logChunks(url, o,  signal) {
-                try {
+
+
+            async function logChunks(signal) {
                     
-                    const response = await fetch(url, { 
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        signal: signal,
-                        method: 'POST',
-                        body: JSON.stringify( o )
-                    });
-                    for await (const chunk of response.body) {
-                        if (signal.aborted) throw signal.reason;
-                        const text = decoder.decode(chunk, { stream: true });
-                        current = document.getElementById('results').innerHTML;
-                        document.getElementById('results').innerHTML = current + '&#10;' + text;
-                    }
-                } catch (e) {
-                    if (e instanceof TypeError) {
-                        console.log(e);
-                        //logConsumer("TypeError: Browser may not support async iteration");
-                    } else {
-                        //logConsumer(`Error in async iterator: ${e}.`);
-                    }
+                const response = await fetch('http://localhost:8000/stream', { 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: signal,
+                    method: 'GET',
+                });
+                for await (const chunk of response.body) {
+                    if (signal.aborted) throw signal.reason;
+                    const text = decoder.decode(chunk, { stream: true });
+                    current = document.getElementById('results').innerHTML;
+                    document.getElementById('results').innerHTML = current + '&#10;' + text;
                 }
             }
 
-             // headers: {
-                   //     'Accept': 'application.json',
-                   //     'Content-Type': 'application/json'
 
-            function formSubmit(e) {
-                //alert("submit");
-                //logChunks("/realtime-stream", { signal: aborter.signal });
-                const o = {};
-                new FormData(form).forEach( ( value, key) => o[key] = value);
-                logChunks('http://localhost:8000/send', o, aborter.signal);
-                 e.preventDefault();
+            function logC(e) {
+                e.preventDefault();
+                logChunks(aborter.signal);
             }
 
+            function stopC(e) {
+                e.preventDefault();
+
+                const response = fetch('http://localhost:8000/stop', {
+                    method: 'GET'
+                });
+
+            }
+
+
+
+            function formSubmit(e) {
+                e.preventDefault();
+                
+                const o = {};
+                new FormData(form).forEach( ( value, key) => o[key] = value);
+
+                const response = fetch('http://localhost:8000/send', { 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    body: JSON.stringify( o )
+                });
+            }
             
 
 
@@ -61,9 +69,9 @@
     </head>
     <body>
         <em>testing</em><br/>
-        <button id="connectBtn">Connect</button>
-
+        <button id="startBtn">Start</button>
         <textarea id="results" rows="30" cols="80">hello</textarea>
+        <button id="stopBtn">Stop</button>
         <button id="abortBtn">Abort</button>
         <form id="form" method="POST">
             <input type="text" name="message" maxlength="15"/>
@@ -73,31 +81,19 @@
 
     <script type="text/javascript">
 
-        abortBtn.addEventListener("click", () => aborter.abort());
+        startBtn.addEventListener("click", logC );
+        stopBtn.addEventListener("click", stopC );
+
+       // abortBtn.addEventListener("click", () => aborter.abort());
         form.addEventListener( "submit", formSubmit );
 
-        /*
-        fetch('/realtime-stream', {
-            method: 'GET',
-        }).then(
-            function(response) {
-                response.text().then(
-                    function(data) {
-                        document.getElementById('results').innerHTML = data
-                    }
-                );
-            }
-        )
 
-        */
-       
+        
 
 
         
-        // logChunks("/realtime-stream", { signal: aborter.signal });
-        
 
-       
+
 
         
 
