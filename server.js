@@ -70,6 +70,8 @@ app.get('/stream', async (req, res) => {
 
     try {
 
+        console.log('start stream');
+
         await socketClient.ensureConnect().then(
 
             (connected) => {
