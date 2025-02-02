@@ -3,24 +3,16 @@
     <head>
         <title>Denonatrator</title>
 
-        <style type="text/css">
-            #results {
-                width: 1000px;
-                height: 300px;
-                border: 1px solid black;
-            }
-
-        </style>
-
         <script type="text/javascript">
 
             const aborter = new AbortController();
             const decoder = new TextDecoder();
 
 
-            async function clientConnect(signal) {
+
+            async function logChunks(signal) {
                     
-                const response = await fetch('http://localhost:8000/connect', { 
+                const response = await fetch('http://localhost:8000/stream', { 
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -30,21 +22,17 @@
                 for await (const chunk of response.body) {
                     if (signal.aborted) throw signal.reason;
                     const text = decoder.decode(chunk, { stream: true });
-                    current = document.getElementById('results').innerHTML;
-                    console.log(text);
-                    
-                    document.getElementById('results').innerHTML = current + '<br/>' + text;
+                    //current = document.getElementById('results').innerHTML;
+                    document.getElementById('results').innerHTML = '&#10;' + text;
                 }
             }
-/*
+
 
             function logC(e) {
                 e.preventDefault();
                 logChunks(aborter.signal);
             }
-                */
 
-        /*
             function stopC(e) {
                 e.preventDefault();
 
@@ -53,7 +41,6 @@
                 });
 
             }
-                */
 
 
 
@@ -63,7 +50,7 @@
                 const o = {};
                 new FormData(form).forEach( ( value, key) => o[key] = value);
 
-                const response = fetch('http://localhost:8000/query', { 
+                const response = fetch('http://localhost:8000/send', { 
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -71,7 +58,7 @@
                     body: JSON.stringify( o )
                 });
             }
-          
+            
 
 
         </script>
@@ -83,7 +70,7 @@
     <body>
         <em>testing</em><br/>
         <button id="startBtn">Start</button>
-        <div id="results">hello</div>
+        <textarea id="results" rows="30" cols="80">hello</textarea>
         <button id="stopBtn">Stop</button>
         <button id="abortBtn">Abort</button>
         <form id="form" method="POST">
@@ -94,21 +81,26 @@
 
     <script type="text/javascript">
 
-/*
         startBtn.addEventListener("click", logC );
         stopBtn.addEventListener("click", stopC );
 
        // abortBtn.addEventListener("click", () => aborter.abort());
         form.addEventListener( "submit", formSubmit );
 
+
         
-*/
-
-        form.addEventListener( "submit", formSubmit );
 
 
-        clientConnect(aborter.signal);
         
+
+
+
+        
+
+
+
+
+
 
     </script>
 
