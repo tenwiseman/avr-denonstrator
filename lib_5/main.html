@@ -33,15 +33,7 @@
                 logChunks(aborter.signal);
             }
 
-            function stopC(e) {
-                e.preventDefault();
-
-                const response = fetch('http://localhost:8000/stop', {
-                    method: 'GET'
-                });
-
-            }
-
+       
 
 
             function formSubmit(e) {

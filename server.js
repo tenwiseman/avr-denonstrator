@@ -45,7 +45,7 @@ app.get('/connect', async (req, res) => {
     // open new stream object
     stream = new RealTimeStream();
     
-    if (!socketClient) {
+    if (!socketClient || socketClient.socket.destroyed) {
         socketClient = new SocketClient(HOST, SOCKET_PORT, stream);
     } else {
         socketClient.stream = stream;

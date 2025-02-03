@@ -17,7 +17,7 @@
             const aborter = new AbortController();
             const decoder = new TextDecoder();
 
-
+            // after page complete
             async function clientConnect(signal) {
                     
                 const response = await fetch('http://localhost:8000/connect', { 
@@ -36,27 +36,8 @@
                     document.getElementById('results').innerHTML = current + '<br/>' + text;
                 }
             }
-/*
 
-            function logC(e) {
-                e.preventDefault();
-                logChunks(aborter.signal);
-            }
-                */
-
-        /*
-            function stopC(e) {
-                e.preventDefault();
-
-                const response = fetch('http://localhost:8000/stop', {
-                    method: 'GET'
-                });
-
-            }
-                */
-
-
-
+            // on form submit
             function formSubmit(e) {
                 e.preventDefault();
                 
@@ -72,8 +53,6 @@
                 });
             }
           
-
-
         </script>
 
 
@@ -82,10 +61,7 @@
     </head>
     <body>
         <em>testing</em><br/>
-        <button id="startBtn">Start</button>
-        <div id="results">hello</div>
-        <button id="stopBtn">Stop</button>
-        <button id="abortBtn">Abort</button>
+        <div id="results"></div>
         <form id="form" method="POST">
             <input type="text" name="message" maxlength="15"/>
             <input type="submit"/>
@@ -94,18 +70,8 @@
 
     <script type="text/javascript">
 
-/*
-        startBtn.addEventListener("click", logC );
-        stopBtn.addEventListener("click", stopC );
-
-       // abortBtn.addEventListener("click", () => aborter.abort());
-        form.addEventListener( "submit", formSubmit );
-
-        
-*/
 
         form.addEventListener( "submit", formSubmit );
-
 
         clientConnect(aborter.signal);
         
