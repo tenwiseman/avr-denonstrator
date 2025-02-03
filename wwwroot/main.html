@@ -4,10 +4,38 @@
         <title>Denonatrator</title>
 
         <style type="text/css">
+
+            #online {
+                width:30px;
+                height:20px;
+                background-color: green;
+            }
+
+
             #results {
                 width: 1000px;
-                height: 300px;
+                height: 500px;
                 border: 1px solid black;
+                overflow: scroll;
+                border-style: inset;
+            }
+
+            #results span {
+                padding: 2px;
+                border: 1px solid lightgray;
+                display: inline-block;
+            }
+
+            #results div:first-child {
+                background-color: lightgray;
+            }
+
+            #results span:first-child {
+                width: 400px;
+            }
+
+            #results span:nth-child(2) {
+                width: 550px;
             }
 
         </style>
@@ -19,7 +47,7 @@
 
             // after page complete
             async function clientConnect(signal) {
-                    
+     
                 const response = await fetch('http://localhost:8000/connect', { 
                     headers: {
                         'Content-Type': 'application/json'
@@ -27,20 +55,46 @@
                     signal: signal,
                     method: 'GET',
                 });
+
+
+                const online = document.getElementById('online');
+                const results = document.getElementById('results');
+
+
                 for await (const chunk of response.body) {
                     if (signal.aborted) throw signal.reason;
-                    const text = decoder.decode(chunk, { stream: true });
-                    current = document.getElementById('results').innerHTML;
-                    console.log(text);
+                    const whole = decoder.decode(chunk, { stream: true });
+                    const text = whole.split(',');
+
+                    if (text[0] === 'error') {
+                        online.style.backgroundColor = 'red';
+                    }
                     
-                    document.getElementById('results').innerHTML = current + '<br/>' + text;
+                    const col1 = document.createElement('span');
+                    const txt1 = document.createTextNode(text[0]);
+                    col1.appendChild(txt1);
+                   
+                    const col2 = document.createElement('span');
+                    const txt2 = document.createTextNode(text[1]);
+                    col2.appendChild(txt2);
+
+                    const row = document.createElement('div');
+                    row.appendChild(col1);
+                    row.appendChild(col2);
+                    results.appendChild(row);
+
+                    row.scrollIntoView({block: "end", inline: "nearest"});
                 }
+
+                
+
+
             }
 
             // on form submit
             function formSubmit(e) {
                 e.preventDefault();
-                
+               
                 const o = {};
                 new FormData(form).forEach( ( value, key) => o[key] = value);
 
@@ -51,6 +105,7 @@
                     method: 'POST',
                     body: JSON.stringify( o )
                 });
+              
             }
           
         </script>
@@ -60,8 +115,10 @@
 
     </head>
     <body>
-        <em>testing</em><br/>
-        <div id="results"></div>
+        <div id="online"></div>
+        <div id="results">
+            <div><span>Command</span><span>Result</span></div>
+        </div>
         <form id="form" method="POST">
             <input type="text" name="message" maxlength="15"/>
             <input type="submit"/>

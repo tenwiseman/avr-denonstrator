@@ -1,8 +1,8 @@
 const express = require('express');
 const SocketClient = require('./lib/SocketClient.js');
+const Readable = require('stream').Readable;
 
-const { Readable } = require('stream');
-
+// sends data via readable stream to client  
 class RealTimeStream extends Readable {
     constructor(options) {
         super(options);
@@ -13,9 +13,7 @@ class RealTimeStream extends Readable {
     sendData(line) {
         this.push(line);
     }
-
 }
-
 
 // Replace with your receiver's address & port
 const HOST = '192.168.3.212';
@@ -42,7 +40,7 @@ var socketClient = null;
 
 app.get('/connect', async (req, res) => {
 
-    // open new stream object
+    // open new stream
     stream = new RealTimeStream();
     
     if (!socketClient || socketClient.socket.destroyed) {
@@ -83,13 +81,13 @@ app.post('/query', async (req, res) => {
         if (socketClient) {
 
             socketClient.write(message);
+
         } else {
             console.log('not connected');
         }
-        
-
-
     }
+
+    res.end();
 
 
 });
