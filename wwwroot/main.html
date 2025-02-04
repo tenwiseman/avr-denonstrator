@@ -66,24 +66,31 @@
                     const whole = decoder.decode(chunk, { stream: true });
                     const text = whole.split(',');
 
-                    if (text[0] === 'error') {
-                        online.style.backgroundColor = 'red';
+                    switch (text[0]) {
+                        case 'error':
+                            online.style.backgroundColor = 'red';
+                            break;
+                        case 'OK':
+                            online.style.backgroundColor = 'green';
+                            break;
                     }
                     
-                    const col1 = document.createElement('span');
-                    const txt1 = document.createTextNode(text[0]);
-                    col1.appendChild(txt1);
-                   
-                    const col2 = document.createElement('span');
-                    const txt2 = document.createTextNode(text[1]);
-                    col2.appendChild(txt2);
+                    if (text[0] !== 'OK') {    
+                        const col1 = document.createElement('span');
+                        const txt1 = document.createTextNode(text[0]);
+                        col1.appendChild(txt1);
+                    
+                        const col2 = document.createElement('span');
+                        const txt2 = document.createTextNode(text[1]);
+                        col2.appendChild(txt2);
 
-                    const row = document.createElement('div');
-                    row.appendChild(col1);
-                    row.appendChild(col2);
-                    results.appendChild(row);
+                        const row = document.createElement('div');
+                        row.appendChild(col1);
+                        row.appendChild(col2);
+                        results.appendChild(row);
 
-                    row.scrollIntoView({block: "end", inline: "nearest"});
+                        row.scrollIntoView({block: "end", inline: "nearest"});
+                    }
                 }
 
                 
@@ -92,19 +99,33 @@
             }
 
             // on form submit
-            function formSubmit(e) {
+            async function formSubmit(e) {
                 e.preventDefault();
                
                 const o = {};
                 new FormData(form).forEach( ( value, key) => o[key] = value);
 
-                const response = fetch('http://localhost:8000/query', { 
+                const response = await fetch('http://localhost:8000/query', { 
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     method: 'POST',
                     body: JSON.stringify( o )
                 });
+
+                if(!response.ok) {
+                    const msg = await response.text();
+                    if (msg === 'Message is required') {
+                        alert(msg);
+                    } else if (msg === 'Reconnect Stream') {
+                        clientConnect(aborter.signal);
+                        formSubmit(e);
+                    }
+                }
+
+
+
+                
               
             }
           

@@ -74,17 +74,18 @@ app.post('/query', async (req, res) => {
 
     const message = req.body.message;
 
-    if (!message) {
+    if (typeof stream === 'undefined') {
+        return res.status(400).send('Reconnect Stream');
+    } else if (!message) {
         return res.status(400).send('Message is required');
     } else {
 
-        if (socketClient) {
-
-            socketClient.write(message);
-
-        } else {
-            console.log('not connected');
+        if (!socketClient || socketClient.socket.destroyed) {
+            socketClient = new SocketClient(HOST, SOCKET_PORT, stream);
         }
+
+        socketClient.write(message);
+         
     }
 
     res.end();
