@@ -14,13 +14,22 @@
 
             #results {
                 width: 1000px;
-                height: 500px;
+                height: 400px;
                 border: 1px solid black;
                 overflow: scroll;
                 border-style: inset;
             }
 
-            #results span {
+            #osd {
+                width: 300px;
+                height: 220px;
+                border: 1px solid black;
+                overflow: scroll;
+                border-style: inset;
+            }
+
+
+            #results span, #osd span {
                 padding: 2px;
                 border: 1px solid lightgray;
                 display: inline-block;
@@ -45,7 +54,7 @@
             const aborter = new AbortController();
             const decoder = new TextDecoder();
 
-            // after page complete
+            // execute this after window DOM loaded!
             async function clientConnect(signal) {
      
                 const response = await fetch('http://localhost:8000/connect', { 
@@ -64,38 +73,48 @@
                 for await (const chunk of response.body) {
                     if (signal.aborted) throw signal.reason;
                     const whole = decoder.decode(chunk, { stream: true });
-                    const text = whole.split(',');
 
-                    switch (text[0]) {
-                        case 'error':
-                            online.style.backgroundColor = 'red';
-                            break;
-                        case 'OK':
-                            online.style.backgroundColor = 'green';
-                            break;
-                    }
-                    
-                    if (text[0] !== 'OK') {    
-                        const col1 = document.createElement('span');
-                        const txt1 = document.createTextNode(text[0]);
-                        col1.appendChild(txt1);
-                    
-                        const col2 = document.createElement('span');
-                        const txt2 = document.createTextNode(text[1]);
-                        col2.appendChild(txt2);
-                        console.log(text[1]);
+                    // CSV data is received in variable chunks of field pairs
+                    // remove last comma, and split to fields 
+                    const fields = whole.slice(0, -1).split(',');
 
-                        const row = document.createElement('div');
-                        row.appendChild(col1);
-                        row.appendChild(col2);
-                        results.appendChild(row);
+                    for (let i = 0; i < fields.length; i += 2) {
+                        switch (fields[i]) {
+                            case 'error':
+                                online.style.backgroundColor = 'red';
+                                break;
+                            case 'OK':
+                                online.style.backgroundColor = 'green';
+                                break;
+                        }
 
-                        row.scrollIntoView({block: "end", inline: "nearest"});
+                        if (fields[i] !== 'OK') { 
+                            // first field - Command / Event   
+                            const col1 = document.createElement('span');
+                            const txt1 = document.createTextNode(fields[i]);
+                            col1.appendChild(txt1);
+
+                            // second field - Result
+                            var result = fields[i+1];
+                            const col2 = document.createElement('span');
+                            
+                            if (result.includes('NS')) {
+                                osd = 'field' + result.substr(3, 1);
+                                document.getElementById(osd).innerHTML = result.slice(4);
+                            }
+                            const txt2 = document.createTextNode(result);
+                            col2.appendChild(txt2);
+
+                            // create row, add field elements
+                            const row = document.createElement('div');
+                            row.appendChild(col1);
+                            row.appendChild(col2);
+                            results.appendChild(row);
+
+                            row.scrollIntoView({block: "end", inline: "nearest"});
+                        }
                     }
                 }
-
-                
-
 
             }
 
@@ -123,11 +142,14 @@
                         formSubmit(e);
                     }
                 }
+            }
 
-
-
+            // on button
+            function buttonpress(e, cmd) {
+                e.preventDefault();
                 
-              
+                document.getElementById('command').value = cmd;
+                formSubmit(e);
             }
           
         </script>
@@ -139,18 +161,75 @@
     <body>
         <div id="online"></div>
         <div id="results">
-            <div><span>Command</span><span>Result</span></div>
+            <div><span>Command / Event</span><span>Result</span></div>
         </div>
         <form id="form" method="POST">
-            <input type="text" name="message" maxlength="15"/>
+            <input id="command" type="text" name="message" maxlength="15"/>
             <input type="submit"/>
         </form>
+        <div id="osd">
+            <div><span id="field0"></span></div>
+            <div><span id="field1"></span></div>
+            <div><span id="field2"></span></div>
+            <div><span id="field3"></span></div>
+            <div><span id="field4"></span></div>
+            <div><span id="field5"></span></div>
+            <div><span id="field6"></span></div>
+            <div><span id="field7"></span></div>
+            <div><span id="field8"></span></div>
+        </div>
+        <button id="showosd">osd</button>
+
+        <div id="buttons">
+            <span id="repeatone">repeatone</span>
+            <span id="repeatall">repeatall</span>
+            <span id="repeatoff">repeatoff</span>
+            <span id="stop">stop</span>
+
+            <span id="randonall">randonall</span>
+            <span id="randoff">randoff</span>
+
+            <span id="up">up</span>
+            <span id="pageup">pageup</span>
+
+            <span id="left">left</span>
+            <span id="ok">ok</span>
+            <span id="right">right</span>
+
+            <span id="down">down</span>
+            <span id="pagedown">pagedown</span>
+
+            <span id="skipminus">skipminus</span>
+            <span id="pause">pase</span>
+            <span id="play">play</span>
+            <span id="skipplus">skipplus</span>
+        </div>
+        
     </body>
 
     <script type="text/javascript">
 
 
         form.addEventListener( "submit", formSubmit );
+
+        /*
+
+        repeatone	repeatall	repeatoff   stop
+		            randonall	randoff
+			
+	                up		                pageup
+
+        left	    ok	        right	
+
+	                down		            pagedown
+			
+        skipminus	pause	    play	    skipplus
+
+        */
+
+
+        showosd.addEventListener( "click", (event) => buttonpress(event, 'NSA') );
+
 
         clientConnect(aborter.signal);
         
