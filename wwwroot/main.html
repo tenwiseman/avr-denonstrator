@@ -54,9 +54,12 @@
             const aborter = new AbortController();
             const decoder = new TextDecoder();
 
-            // execute this after window DOM loaded!
+            /* connect streaming data input from server */
+
             async function clientConnect(signal) {
      
+                // execute this function after window DOM loaded!
+
                 const response = await fetch('http://localhost:8000/connect', { 
                     headers: {
                         'Content-Type': 'application/json'
@@ -148,9 +151,26 @@
             function buttonpress(e, cmd) {
                 e.preventDefault();
                 
+                
                 document.getElementById('command').value = cmd;
-                formSubmit(e);
+                formSubmit(event);
             }
+
+
+            function connectButtons() {
+                const buttons = document.getElementById('buttons');
+                for (var b of buttons.getElementsByTagName('button')){
+                    b.addEventListener("click", (event) => {
+
+                        // extract and send the command
+                        cmd = event.target.id.slice(-2);
+                        document.getElementById('command').value = `NS${cmd}`;
+                        formSubmit(event);
+
+                    });
+                }
+            }
+            
           
         </script>
 
@@ -181,28 +201,28 @@
         <button id="showosd">osd</button>
 
         <div id="buttons">
-            <span id="repeatone">repeatone</span>
-            <span id="repeatall">repeatall</span>
-            <span id="repeatoff">repeatoff</span>
-            <span id="stop">stop</span>
+            <button id="repeatone9H">repeatone</button>
+            <button id="repeatall9I">repeatall</button>
+            <button id="repeatoff9J">repeatoff</button>
+            <button id="stop9C">stop</button>
 
-            <span id="randonall">randonall</span>
-            <span id="randoff">randoff</span>
+            <button id="randonall9K">randonall</button>
+            <button id="randoff9L">randoff</button>
 
-            <span id="up">up</span>
-            <span id="pageup">pageup</span>
+            <button id="up90">up</button>
+            <button id="pageup9X">pageup</button>
 
-            <span id="left">left</span>
-            <span id="ok">ok</span>
-            <span id="right">right</span>
+            <button id="left92">left</button>
+            <button id="ok94">ok</button>
+            <button id="right93">right</button>
 
-            <span id="down">down</span>
-            <span id="pagedown">pagedown</span>
+            <button id="down91">down</button>
+            <button id="pagedown9Y">pagedown</button>
 
-            <span id="skipminus">skipminus</span>
-            <span id="pause">pase</span>
-            <span id="play">play</span>
-            <span id="skipplus">skipplus</span>
+            <button id="skipminus9E">skipminus</button>
+            <button id="pause9B">pase</button>
+            <button id="play9A">play</button>
+            <button id="skipplus9D">skipplus</button>
         </div>
         
     </body>
@@ -232,6 +252,7 @@
 
 
         clientConnect(aborter.signal);
+        connectButtons();
         
 
     </script>
