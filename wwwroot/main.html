@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html >
     <head>
-        <title>Denonatrator</title>
+        <title>Denonstrator</title>
 
         <style type="text/css">
 
@@ -11,9 +11,24 @@
                 background-color: green;
             }
 
+            #buttons {
+                display: flex; 
+                flex-wrap: wrap;
+                width:300px;
+                height:200px;
+            }
+
+            #buttons button, #buttons div {
+                flex: 1 0 21%;
+                width:50px;
+                height:20px;
+            }
+
+
+
 
             #results {
-                width: 1000px;
+                width: 300px;
                 height: 400px;
                 border: 1px solid black;
                 overflow: scroll;
@@ -40,11 +55,11 @@
             }
 
             #results span:first-child {
-                width: 400px;
+                width: 80px;
             }
 
             #results span:nth-child(2) {
-                width: 550px;
+                width: 200px;
             }
 
         </style>
@@ -180,13 +195,8 @@
     </head>
     <body>
         <div id="online"></div>
-        <div id="results">
-            <div><span>Command / Event</span><span>Result</span></div>
-        </div>
-        <form id="form" method="POST">
-            <input id="command" type="text" name="message" maxlength="15"/>
-            <input type="submit"/>
-        </form>
+        
+        
         <div id="osd">
             <div><span id="field0"></span></div>
             <div><span id="field1"></span></div>
@@ -200,30 +210,47 @@
         </div>
         <button id="showosd">osd</button>
 
+        <form id="form" method="POST">
+            <input id="command" type="text" name="message" maxlength="15"/>
+            <input type="submit"/>
+        </form>
+
         <div id="buttons">
             <button id="repeatone9H">repeatone</button>
             <button id="repeatall9I">repeatall</button>
             <button id="repeatoff9J">repeatoff</button>
             <button id="stop9C">stop</button>
 
+            <div></div>
             <button id="randonall9K">randonall</button>
             <button id="randoff9L">randoff</button>
+            <div></div>
 
+            <div></div>
             <button id="up90">up</button>
+            <div></div>
             <button id="pageup9X">pageup</button>
 
             <button id="left92">left</button>
             <button id="ok94">ok</button>
             <button id="right93">right</button>
+            <div></div>
 
+            <div></div>
             <button id="down91">down</button>
+            <div></div>
             <button id="pagedown9Y">pagedown</button>
 
             <button id="skipminus9E">skipminus</button>
-            <button id="pause9B">pase</button>
+            <button id="pause9B">pause</button>
             <button id="play9A">play</button>
             <button id="skipplus9D">skipplus</button>
         </div>
+        
+        <div id="results">
+            <div><span>Command / Event</span><span>Result</span></div>
+        </div>
+        
         
     </body>
 
