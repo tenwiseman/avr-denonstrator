@@ -6,29 +6,58 @@
         <style type="text/css">
 
             h1 {
+                font-size: medium;
                 margin: 0;
+            }
+
+            form {
+                padding: 10px;
+            }
+
+            #command {
+                border-style: inset;
             }
 
             .container {
                 display: flex; 
                 flex-wrap: wrap;
-                width: 650px;
-                padding:10px;
-                border: 1px solid black;
+                width: 750px;
+                padding: 0 10px;
+                border-left: 1px solid black;
+                border-right: 1px solid black;
                 background-color: lightgray;
                 font-family: Arial, Helvetica, sans-serif;
             }
 
-            .column1, .column2 {
-                flex: 1;
-                width:50%;
+            #row1 {
+                padding-top: 10px;
+                border-top: 1px solid black;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
             }
 
-            .column2 {
+            #row3 {
+                padding: 10px;
+                border-bottom: 1px solid black;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+
+            .column1, .column2 {
+                flex: 1;
+            }
+
+
+
+
+            .column1 {
                 background-color: lightslategray;
             }
 
 
+            .column2 {
+                background-color: lightslategray;
+            }
 
             #online {
                 width:30px;
@@ -43,7 +72,7 @@
                 flex-wrap: wrap;
                 margin: 10px;
               
-                height:160px;
+                
             }
 
             .buttons button, .buttons div {
@@ -58,12 +87,12 @@
 
             #osd {
                
-                height: 220px;
+                height: 250px;
                 margin: 10px;
                 border: 1px solid black;
                 overflow: scroll;
                 border-style: inset;
-                background-color: black;
+                background-color: darkslategray;
                 color: cyan;
             }
 
@@ -85,15 +114,13 @@
             #results {
                
                 height: 400px;
+                margin-left: 10px;
                 border: 1px solid black;
                 overflow: scroll;
                 border-style: inset;
                 background-color: linen;
             }
-
             
-
-
             #results span, #sosd span {
                 padding: 2px;
                 border: 1px solid lightgray;
@@ -105,11 +132,15 @@
             }
 
             #results span:first-child {
-                width: 80px;
+                width: 100px;
             }
 
             #results span:nth-child(2) {
-                width: 200px;
+                width: 50px;
+            }
+
+            #results span:nth-child(3) {
+                width: 180px;
             }
 
         </style>
@@ -146,8 +177,8 @@
                     // remove last comma, and split to fields 
                     const fields = whole.slice(0, -1).split(',');
 
-                    for (let i = 0; i < fields.length; i += 2) {
-                        switch (fields[i]) {
+                    for (let i = 0; i < fields.length; i += 3) {
+                        switch (fields[i+1]) {
                             case 'error':
                                 online.style.backgroundColor = 'red';
                                 break;
@@ -156,27 +187,34 @@
                                 break;
                         }
 
-                        if (fields[i] !== 'OK') { 
-                            // first field - Command / Event   
+                        if (fields[i+1] !== 'OK') { 
+
+                            // first field - Timestamp  
                             const col1 = document.createElement('span');
                             const txt1 = document.createTextNode(fields[i]);
                             col1.appendChild(txt1);
 
-                            // second field - Result
-                            var result = fields[i+1];
+                            // second field - Command / Event   
                             const col2 = document.createElement('span');
+                            const txt2 = document.createTextNode(fields[i+1]);
+                            col2.appendChild(txt2);
+
+                            // third field - Result
+                            var result = fields[i+2];
+                            const col3 = document.createElement('span');
                             
                             if (result.includes('NS')) {
                                 osd = 'field' + result.substr(3, 1);
                                 document.getElementById(osd).innerHTML = result.slice(4);
                             }
-                            const txt2 = document.createTextNode(result);
-                            col2.appendChild(txt2);
+                            const txt3 = document.createTextNode(result);
+                            col3.appendChild(txt3);
 
                             // create row, add field elements
                             const row = document.createElement('div');
                             row.appendChild(col1);
                             row.appendChild(col2);
+                            row.appendChild(col3);
                             results.appendChild(row);
 
                             row.scrollIntoView({block: "end", inline: "nearest"});
@@ -212,28 +250,25 @@
                 }
             }
 
-            // on button
-            function buttonpress(e, cmd) {
-                e.preventDefault();
-
-                if (cmd === 'CLR') {
-                    cmd = 'PW?'
-                }
-
-                document.getElementById('command').value = cmd;
-                formSubmit(event);
-            }
+            
 
 
-            function connectButtons() {
-                const buttons = document.getElementById('buttons');
+            function connectButtons(buttonid) {
+                const buttons = document.getElementById(buttonid);
                 for (var b of buttons.getElementsByTagName('button')){
                     b.addEventListener("click", (event) => {
 
                         // extract and send the command
-                        cmd = event.target.id.slice(-2);
-                        document.getElementById('command').value = `NS${cmd}`;
-                        formSubmit(event);
+                        const re = /\.(.*)/;
+                        cmd = event.target.id.match(re)[1];
+
+
+                        if (cmd === 'RELOAD') {
+                            location.reload();
+                        } else {    
+                            document.getElementById('command').value = `${cmd}`;
+                            formSubmit(event);
+                        }
 
                     });
                 }
@@ -248,8 +283,8 @@
     </head>
     <body>
 
-        <div class="container">
-            <h1>DENONstrator</h1>
+        <div id="row1" class="container">
+            <h1>AVR-3808 DENON<i>strator...</i></h1>
             
         </div>
 
@@ -257,10 +292,18 @@
 
             <div class="column1">
 
-                <button id="clearevt">Clear</button>
+                <div id="buttons1" class="buttons"> 
+                    <button id=".RELOAD">Clear</button>
+                    <button id=".PW?">PW?</button>
+                    <button id=".PWSTANDBY">PWSTANDBY</button>
+                </div>
                 
                 <div id="results">
-                    <div><span>Event</span><span>Result</span></div>
+                    <div>
+                        <span>Time</span>
+                        <span>Cmd</span>
+                        <span>Result</span>
+                    </div>
                 </div>
 
                 <form id="form" method="POST">
@@ -270,8 +313,10 @@
 
             </div>
             
-            <div class="column2">  
-                <button id="showosd">osd</button>
+            <div class="column2">
+                <div id="buttons2" class="buttons">  
+                    <button id=".NSA">osd</button>
+                </div>
                 <div id="osd">
                     <span id="field0"></span>
                     <span id="field1"></span>
@@ -287,36 +332,36 @@
 
                 
 
-                <div class="buttons">
-                    <button id="repeatone9H">rpt 1</button>
-                    <button id="repeatall9I">rpt all</button>
-                    <button id="repeatoff9J">rpt off</button>
-                    <button id="stop9C">stop</button>
+                <div id="buttons3" class="buttons">
+                    <button id=".NS9H">rpt 1</button>
+                    <button id=".NS9I">rpt all</button>
+                    <button id=".NS9J">rpt off</button>
+                    <button id=".NS9C">stop</button>
 
                     <div></div>
-                    <button id="randonall9K">rnd all</button>
-                    <button id="randoff9L">rnd off</button>
-                    <div></div>
-
-                    <div></div>
-                    <button id="up90">up</button>
-                    <div></div>
-                    <button id="pageup9X">page up</button>
-
-                    <button id="left92">left</button>
-                    <button id="ok94">ok</button>
-                    <button id="right93">right</button>
+                    <button id=".NS9K">rnd all</button>
+                    <button id=".NS9L">rnd off</button>
                     <div></div>
 
                     <div></div>
-                    <button id="down91">down</button>
+                    <button id=".NS90">up</button>
                     <div></div>
-                    <button id="pagedown9Y">page dn</button>
+                    <button id=".NS9X">page up</button>
 
-                    <button id="skipminus9E">skip -</button>
-                    <button id="pause9B">pause</button>
-                    <button id="play9A">play</button>
-                    <button id="skipplus9D">skip +</button>
+                    <button id=".NS92">left</button>
+                    <button id=".NS94">ok</button>
+                    <button id=".NS93">right</button>
+                    <div></div>
+
+                    <div></div>
+                    <button id=".NS91">down</button>
+                    <div></div>
+                    <button id=".NS9Y">page dn</button>
+
+                    <button id=".NS9E">skip -</button>
+                    <button id=".NS9B">pause</button>
+                    <button id=".NS9A">play</button>
+                    <button id=".NS9D">skip +</button>
                 </div>
             </div>
 
@@ -327,7 +372,7 @@
 
         </div>
 
-        <div class="container">
+        <div id="row3" class="container">
             <div id="online"></div>
         </div>
 
@@ -355,12 +400,12 @@
         */
 
 
-        showosd.addEventListener( "click", (event) => buttonpress(event, 'NSA') );
-
-        clearevt.addEventListener( "click", (event) => buttonpress(event, 'CLR') );
-
         clientConnect(aborter.signal);
-        connectButtons();
+        
+        connectButtons('buttons1');
+        connectButtons('buttons2');
+        connectButtons('buttons3');
+
         
 
     </script>
