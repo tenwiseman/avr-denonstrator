@@ -36,13 +36,19 @@ app.use(express.urlencoded({
 
 var socketClient = null;
 
-  
+// Redirect to /main.html from root
+app.get('/', function(req, res){
+    res.redirect('/main.html');
+});  
 
+
+// Connect a ReadableStream to the browser
 app.get('/connect', async (req, res) => {
 
     // open new stream
     stream = new RealTimeStream();
-    
+
+    // connect it to a new or existing serverside socketClient
     if (!socketClient || socketClient.socket.destroyed) {
         socketClient = new SocketClient(HOST, SOCKET_PORT, stream);
     } else {
@@ -65,7 +71,7 @@ app.get('/connect', async (req, res) => {
     });
 
     // End response when the stream is destroyed
-        req.on('close', () => {
+    req.on('close', () => {
         stream.destroy();
     });
 });
