@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript">
+    console.log("head");
+
+    async function clientconnect(){
+        try {
+        
+            console.log('fetch started ');
+            const online = document.getElementById('online');
+            const response = await fetch('http://localhost:8000/connect')
+            for await (const chunk of response.body) {
+                console.log('fetch success ');
+            }
+        }
+        catch (err){
+            console.log('this is an error ' + err)
+        }
+    }
+
+</script>
+</head>
+<body>
+    <div id="online">body</div>
+    <script type="text/javascript">     
+        console.log("started");
+        clientconnect();
+    </script>
+</body>
+</html>

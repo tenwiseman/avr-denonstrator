@@ -2,6 +2,7 @@ const express = require('express');
 const SocketClient = require('./lib/SocketClient.js');
 const Readable = require('stream').Readable;
 
+
 // sends data via readable stream to client  
 class RealTimeStream extends Readable {
     constructor(options) {
@@ -27,7 +28,12 @@ const PORT = 8000;
 app.use(express.json());
 
 // Middleware to serve static assets
-app.use(express.static('wwwroot'));
+app.use(express.static('wwwroot', {
+    setHeaders: function(res, path) {
+        res.set("Access-Control-Allow-Origin", "*");
+    }
+}));
+
 
 // Enable urlencoded parsing
 app.use(express.urlencoded({
@@ -36,10 +42,9 @@ app.use(express.urlencoded({
 
 var socketClient = null;
 
-// Redirect to /main.html from root
-app.get('/', function(req, res){
-    res.redirect('/main.html');
-});  
+
+
+
 
 
 // Connect a ReadableStream to the browser
@@ -48,6 +53,12 @@ app.get('/connect', async (req, res) => {
     // open new stream
     stream = new RealTimeStream();
 
+    // Handle stream errors
+    stream.on('error', (err) => {
+        console.log('Stream error:', err);
+        res.status(500).end('Stream error occurred.');  
+    });
+
     // connect it to a new or existing serverside socketClient
     if (!socketClient || socketClient.socket.destroyed) {
         socketClient = new SocketClient(HOST, SOCKET_PORT, stream);
@@ -55,25 +66,25 @@ app.get('/connect', async (req, res) => {
         socketClient.stream = stream;
     }
 
+// 'Content-Security-Policy': "default-src 'none'; img-src 'self'"
+
     // Set response headers for streaming
     res.set({
         'Content-Type': 'text/plain',
         'Transfer-Encoding': 'chunked',
+        'Access-Control-Allow-Origin': '*'
     });
 
     // Pipe the stream to the response
     stream.pipe(res);
 
-    // Handle stream errors
-    stream.on('error', (err) => {
-        console.error('Stream error:', err);
-        res.status(500).end('Stream error occurred.');  
-    });
 
     // End response when the stream is destroyed
     req.on('close', () => {
-        stream.destroy();
+        console.log('webstream closed');
+        // stream.destroy();
     });
+
 });
 
 app.post('/query', async (req, res) => {

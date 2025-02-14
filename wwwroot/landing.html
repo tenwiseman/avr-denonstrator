@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html >
-    <head>
+    <head profile="http://www.w3.org/2005/10/profile">
+        <link rel="icon" 
+                type="image/png" 
+                href="/images/favicon.png" />
+
         <title>Denonstrator</title>
 
         <style type="text/css">
@@ -90,7 +94,7 @@
                 height: 250px;
                 margin: 10px;
                 border: 1px solid black;
-                overflow: scroll;
+                overflow-y: auto;
                 border-style: inset;
                 background-color: darkslategray;
                 color: cyan;
@@ -142,7 +146,7 @@
             }
 
             #results span:nth-child(3) {
-                width: 180px;
+                width: 170px;
             }
 
         </style>
@@ -154,76 +158,105 @@
 
             /* connect streaming data input from server */
 
+            function addresultfield(value, row) {
+                const sp = document.createElement('span');
+                const tx = document.createTextNode(value);
+                sp.appendChild(tx);
+                row.appendChild(sp);
+            }
+
+            function updateresults(chunk) {
+
+                // CSV data is received in variable chunks of field pairs
+                // remove last comma, and split to fields 
+                var fields = chunk.slice(0, -1).split(',');
+
+                for (let i = 0; i < fields.length; i += 3) {
+
+                    // create row, add field elements
+                    const row = document.createElement('div');
+
+                    // first field - Timestamp  
+                    addresultfield(fields[i], row);
+
+                    // second field - Event
+                    var fld2 = fields[i+1];
+
+                    // also update online status
+                    if (fld2 === 'error') {
+                        online.style.backgroundColor = 'red';
+                    } else if (fld2 === 'OK') {
+                        online.style.backgroundColor = 'green';
+                    }
+
+                    addresultfield(fld2, row);
+
+                    // third field - Result
+                    var fld3 = fields[i+2];
+
+                    // also update OSD
+                    if (fld3.includes('NS')) {
+                        osd = 'field' + fld3.substr(3, 1);
+                        document.getElementById(osd).innerHTML = fld3.slice(4);
+                    }
+
+                    addresultfield(fld3, row);
+
+                    // append row to results table
+                    results.appendChild(row);
+
+                    row.scrollIntoView({block: "end", inline: "nearest"});
+            
+                }
+            }
+
             async function clientConnect(signal) {
-     
-                // execute this function after window DOM loaded!
-
-                const response = await fetch('http://localhost:8000/connect', { 
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    signal: signal,
-                    method: 'GET',
-                });
-
 
                 const online = document.getElementById('online');
                 const results = document.getElementById('results');
 
+                // execute this function after window DOM loaded!
 
-                for await (const chunk of response.body) {
-                    if (signal.aborted) throw signal.reason;
-                    const whole = decoder.decode(chunk, { stream: true });
+                try {
 
-                    // CSV data is received in variable chunks of field pairs
-                    // remove last comma, and split to fields 
-                    const fields = whole.slice(0, -1).split(',');
+                    const response = await fetch('http://localhost:8000/connect', { 
+                        headers: {
+                            'Content-Type': 'application/stream+json',
+                        },
+                        signal: signal,
+                        method: 'GET',
+                    });
 
-                    for (let i = 0; i < fields.length; i += 3) {
-                        switch (fields[i+1]) {
-                            case 'error':
-                                online.style.backgroundColor = 'red';
-                                break;
-                            case 'OK':
-                                online.style.backgroundColor = 'green';
-                                break;
-                        }
-
-                        if (fields[i+1] !== 'OK') { 
-
-                            // first field - Timestamp  
-                            const col1 = document.createElement('span');
-                            const txt1 = document.createTextNode(fields[i]);
-                            col1.appendChild(txt1);
-
-                            // second field - Command / Event   
-                            const col2 = document.createElement('span');
-                            const txt2 = document.createTextNode(fields[i+1]);
-                            col2.appendChild(txt2);
-
-                            // third field - Result
-                            var result = fields[i+2];
-                            const col3 = document.createElement('span');
-                            
-                            if (result.includes('NS')) {
-                                osd = 'field' + result.substr(3, 1);
-                                document.getElementById(osd).innerHTML = result.slice(4);
-                            }
-                            const txt3 = document.createTextNode(result);
-                            col3.appendChild(txt3);
-
-                            // create row, add field elements
-                            const row = document.createElement('div');
-                            row.appendChild(col1);
-                            row.appendChild(col2);
-                            row.appendChild(col3);
-                            results.appendChild(row);
-
-                            row.scrollIntoView({block: "end", inline: "nearest"});
-                        }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                }
 
+                    const reader = response.body.getReader();
+                    let done = false;
+
+                    while (!done) {
+
+                        const { value, done: streamDone } = await reader.read();
+
+                        if (streamDone) {
+                            console.log('Stream ended.');
+                            break;
+                        }
+
+                        const chunk = decoder.decode(value, { stream: true }).trim();
+
+                        if (chunk) {
+                            updateresults(chunk);
+                        } else {
+                            console.log('Empty chunk received, skipping.');
+                        }
+
+                    }
+
+                } catch (err) {
+                    console.log('fetch error', err);
+                }
+            
             }
 
             // on form submit
@@ -246,6 +279,7 @@
                     if (msg === 'Message is required') {
                         alert(msg);
                     } else if (msg === 'Reconnect Stream') {
+                        console.log('reconnecting');
                         clientConnect(aborter.signal);
                         formSubmit(e);
                     }
@@ -267,6 +301,7 @@
 
                         if (cmd === 'RELOAD') {
                             location.reload();
+                            
                         } else {    
                             document.getElementById('command').value = `${cmd}`;
                             formSubmit(event);
@@ -275,9 +310,11 @@
                     });
                 }
             }
-            
+  
           
         </script>
+
+
 
 
 
@@ -295,7 +332,7 @@
             <div class="column1">
 
                 <div id="buttons1" class="buttons"> 
-                    <button id=".RELOAD">Clear</button>
+                    <button id=".RELOAD">Reload</button>
                     <button id=".PW?">PW?</button>
                     <button id=".PWSTANDBY">PWSTANDBY</button>
                 </div>
@@ -317,7 +354,7 @@
             
             <div class="column2">
                 <div id="buttons2" class="buttons">  
-                    <button id=".NSA">osd</button>
+                    <button id=".NSA">NSA</button>
                 </div>
                 <div id="osd">
                     <span id="field0"></span>
@@ -401,8 +438,9 @@
 
         */
 
-
-        clientConnect(aborter.signal);
+       clientConnect(aborter.signal).catch(error => {
+            console.log('This error occurred', error)
+        });
         
         connectButtons('buttons1');
         connectButtons('buttons2');
