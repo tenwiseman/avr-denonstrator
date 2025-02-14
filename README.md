@@ -1,7 +1,7 @@
 # AVR Control Protocol Denonstrator
 
-This tiny webapp works wih a Denon web-enabled AVR receiver such as the AVR-3808 / AVR-3808CI. It may work for others.
-It is purely for geeky demonstration purposes of webstreams and websockets, it is not a end user remote control replacement!
+_This tiny webapp works wih a Denon web-enabled AVR receiver such as the AVR-3808 / AVR-3808CI. It may work for others.
+It is purely for geeky demonstration purposes of webstreams and websockets, it is not a end user remote control replacement!_
 
 ## Summary
 Using Node JS and Express, the application offers a simple web interface to send and monitor simple
