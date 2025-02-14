@@ -1,3 +1,8 @@
+/*
+   https://github.com/tenwiseman/avr-denonstrator
+   tenwiseman, Feb 2025 - MIT license.
+*/
+
 const express = require('express');
 const SocketClient = require('./lib/SocketClient.js');
 const Readable = require('stream').Readable;
@@ -30,7 +35,8 @@ app.use(express.json());
 // Middleware to serve static assets
 app.use(express.static('wwwroot', {
     setHeaders: function(res, path) {
-        res.set("Access-Control-Allow-Origin", "*");
+        // no need for headers, but add them here if you want some!
+        // res.set("Access-Control-Allow-Origin", "*");
     }
 }));
 
