@@ -25,10 +25,10 @@ But a rabbit hole had opened and I just had to look into it.
 ## Configuration
 Change the ip address of the AVR and REST port in server.js (default: 8000) 
 
-## Running in Docker
-The included Dockerfile will install the dependencies and run it up an Alpine image.
+### Running in Docker
+The included Dockerfile will install dependencies and run up an Alpine image.
 
-## Running from command line
+### Running from the command line
 1) Navigate to the root of this project in the command line.
 1) Install Node (http://nodejs.org) and execute `npm install`. 
 2) Run `node .` to launch the web server.
@@ -37,7 +37,7 @@ The included Dockerfile will install the dependencies and run it up an Alpine im
 - The full list of valid commands is available in the included protocol PDF from Denon. You may
 find a closer one matching your receiver on Google.
 - The Reload button refrehes the page, a connection is still magically maintained.
-- The web interface also shows user actions made with the receiver's front panel or remote control.
+- The web interface also shows some user actions made with the receiver's front panel or remote control.
 - Be very careful using commands that set volume. You can damage your speakers (and scare the cat) quite easily.
 - Diagnostic output is also available on the process stdout stream.
 
