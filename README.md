@@ -38,7 +38,7 @@ The included Dockerfile will install dependencies and run up an Alpine image.
 find a closer one matching your receiver on Google.
 - The Reload button refrehes the page, a connection is still magically maintained.
 - The web interface also shows some user actions made with the receiver's front panel or remote control.
-- Be very careful using commands that set volume. You can damage your speakers (and scare the cat) quite easily.
+- Be very careful using commands that set volume. You can damage your speakers and scare the hell out of the cat, quite easily.
 - Diagnostic output is also available on the process stdout stream.
 
 ## Acknowledgements
