@@ -1,8 +1,8 @@
 {
-  "name": "denon-avr-rest-api",
+  "name": "denon-avr-denonstrator",
   "version": "2.0.0",
   "author": "me",
-  "description": "Expose a REST API for a Denon web-enabled AVR receiver for Home Assistant",
+  "description": "A simple web interface to send and monitor simple ASCII commands sent to a Demon AVR",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

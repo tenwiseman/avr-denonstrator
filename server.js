@@ -34,18 +34,12 @@ app.use(express.static('wwwroot', {
     }
 }));
 
-
 // Enable urlencoded parsing
 app.use(express.urlencoded({
     extended: true
   }));
 
 var socketClient = null;
-
-
-
-
-
 
 // Connect a ReadableStream to the browser
 app.get('/connect', async (req, res) => {
@@ -66,23 +60,18 @@ app.get('/connect', async (req, res) => {
         socketClient.stream = stream;
     }
 
-// 'Content-Security-Policy': "default-src 'none'; img-src 'self'"
-
     // Set response headers for streaming
     res.set({
         'Content-Type': 'text/plain',
         'Transfer-Encoding': 'chunked',
-        'Access-Control-Allow-Origin': '*'
     });
 
     // Pipe the stream to the response
     stream.pipe(res);
 
-
     // End response when the stream is destroyed
     req.on('close', () => {
         console.log('webstream closed');
-        // stream.destroy();
     });
 
 });
@@ -110,7 +99,10 @@ app.post('/query', async (req, res) => {
 
 });
 
-
+// redirect to landing page from root 
+app.get('/', (req, res) => {
+    res.redirect('landing.html');
+});
 
 
 // Start the Express server
