@@ -40,7 +40,8 @@ The included Dockerfile will install dependencies and run up an Alpine image.
 find a closer one matching your receiver on Google.
 - The reload button simply refreshes the page, a connection to the AVR is still magically maintained.
 - Updated in real-time, the web interface also shows some user actions made with the receiver's front panel or remote control. Try the volume control!
-- However, be very careful typing direct commands that set volume. With the wrong setting you can immediately damage your speakers _and_ scare the hell out of the cat, quite easily.
+- However, be very careful typing direct commands that set volume.
+  With the wrong setting you could immediately damage your speakers _and_ scare the hell out of the cat, quite easily.
 - Diagnostic output is also available on the process stdout stream.
 - Usage is at your own risk.
 
