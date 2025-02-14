@@ -45,8 +45,7 @@ find a closer one matching your receiver on Google.
 - Usage is at your own risk.
 
 ## Acknowledgements
-- Denon is just some Electronics company I have no connection with other than buying their things
-  secondhand on eBay. This receiver is now over 15 years old.
+- Denon is just some Electronics company I have no connection with other than buying their things secondhand on eBay. This receiver is now over 15 years old.
   
   They made some good equipment but sadly their future as of 2024 looks very bleak.
   
