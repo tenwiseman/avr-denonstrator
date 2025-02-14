@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tenwiseman/denon-avr-rest-api"
+    "url": "https://github.com/tenwiseman/avr-denonstrator"
   },
   "license": "MIT"
 }
