@@ -7,6 +7,8 @@ It is purely for geeky demonstration purposes of webstreams and websockets, it i
 Using Node JS and Express, the application offers a simple web interface to send and monitor simple
 ASCII commands, these normally sent by external controllers to the receivers network port (PORT 23 - telnet).
 
+![Screenshot](screenshot.jpg)
+
 It also uses Server-Sent Event (SSE) streaming to the browser, tested in both Chrome and Firefox.
 
 The server can be run from the command line in a suitable operating system or it can be run as a docker image.
@@ -38,7 +40,7 @@ The included Dockerfile will install dependencies and run up an Alpine image.
 find a closer one matching your receiver on Google.
 - The Reload button refrehes the page, a connection is still magically maintained.
 - The web interface also shows some user actions made with the receiver's front panel or remote control.
-- Be very careful using commands that set volume. You can damage your speakers and scare the hell out of the cat, quite easily.
+- Be very careful using commands that set volume. With the wrong setting you can immediately damage your speakers, and scare the hell out of the cat, quite easily.
 - Diagnostic output is also available on the process stdout stream.
 
 ## Acknowledgements
