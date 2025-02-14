@@ -20,7 +20,7 @@ I was trying to get my subwoofer powered on, when the receiver was out of standb
 to check "PWON", and "PWSTANDBY" responses to the "PW?" command, decided a much simpler HA control solution was to try just
 pinging the receiver - with the "Standby Mode Power Saving" setting enabled.
 
-But a rabbit hole had opened and I just had to look into it.
+But a rabbit hole had only opened and I just had to look into it.
 
 ***
 
