@@ -1,6 +1,6 @@
 # AVR Control Protocol Denonstrator
 
-This works wih a Denon web-enabled AVR receiver such as the AVR-3808 / AVR-3808CI. It may work for others.
+This tiny webapp works wih a Denon web-enabled AVR receiver such as the AVR-3808 / AVR-3808CI. It may work for others.
 It is purely for geeky demonstration purposes of webstreams and websockets, it is not a end user remote control replacement!
 
 ## Summary
@@ -42,6 +42,7 @@ find a closer one matching your receiver on Google.
 - The web interface also shows some user actions made with the receiver's front panel or remote control.
 - Be very careful using commands that set volume. With the wrong setting you can immediately damage your speakers, and scare the hell out of the cat, quite easily.
 - Diagnostic output is also available on the process stdout stream.
+- Usage is at your own risk.
 
 ## Acknowledgements
 - Denon is just some Electronics company I have no connection with other than buying their things
