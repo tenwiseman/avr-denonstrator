@@ -1,4 +1,4 @@
-# AVR Control Protocol Denonstrator
+# AVR Control Protocol DenonStrator
 
 _This tiny webapp works wih a Denon web-enabled AVR receiver such as the AVR-3808 / AVR-3808CI. It may work for others.
 It is purely for geeky demonstration purposes of webstreams and websockets, it is not a end user remote control replacement!_
@@ -39,8 +39,9 @@ The included Dockerfile will install dependencies and run up an Alpine image.
 - The full list of valid commands is available in the included protocol PDF from Denon. You may
 find a closer one matching your receiver on Google.
 - The reload button simply refreshes the page, a connection to the AVR is still magically maintained.
-- Updated in real-time, the web interface also shows some user actions made with the receiver's front panel or remote control.
-- Be very careful using commands that set volume. With the wrong setting you can immediately damage your speakers _and_ scare the hell out of the cat, quite easily.
+- Updated in real-time, the web interface also shows some user actions made with the receiver's front panel or remote control. Try the volume control!
+- However, be very careful typing direct commands that set volume.
+  With the wrong setting you could immediately damage your speakers _and_ scare the hell out of the cat, quite easily.
 - Diagnostic output is also available on the process stdout stream.
 - Usage is at your own risk.
 
